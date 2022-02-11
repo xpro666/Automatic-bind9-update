@@ -1,6 +1,6 @@
 #!/bin/sh
   echo -e "\E[33;40m[*] Checking if Bind9 is installed.\e[0m"
-  if [ -f /etc/init.d/bind9 ]; then
+  if [ -f /etc/init.d/bind9 ] || `systemctl | grep -q named` ; then
   echo -e "\E[32;40m Bind9 is installed \e[0m"
   sleep 1
   echo -e "\E[33;40m[*] Checking the Bind9 folder [*]\e[0m"
@@ -11,7 +11,7 @@
     curl -s "http://pgl.yoyo.org/adservers/serverlist.php?hostformat=bindconfig;showintro=0&mimetype=plaintext" > /etc/bind/named.conf.ads
     sed -i 's:null.zone.file:/etc/bind/null.zone.file:g' /etc/bind/named.conf.ads
     echo -e "reloading bind9"
-    /etc/init.d/bind9 restart
+    [ -f /etc/init.d/bind9 ] && /etc/init.d/bind9 restart || service bind9 restart
     echo -e "\E[32;40m[*] updated ad list [*]\e[0m"
   else 
     echo -e "\E[32;40m[*] Check done [*]\e[0m" 
@@ -22,7 +22,7 @@
     curl -s "http://pgl.yoyo.org/adservers/serverlist.php?hostformat=bindconfig;showintro=0&mimetype=plaintext" > /etc/bind/named.conf.ads
     sed -i 's:null.zone.file:/etc/bind/null.zone.file:g' /etc/bind/named.conf.ads
     echo -e "reloading bind9"
-    /etc/init.d/bind9 restart
+    [ -f /etc/init.d/bind9 ] && /etc/init.d/bind9 restart || service bind9 restart
     echo -e "\E[32;40m[*] Update done [*]\e[0m"
 
     fi
@@ -57,7 +57,7 @@ EOF
   read -p "Add to Cron? . (y/n) " REPLY
   if [ "$REPLY" = "y" ]; then
     echo -e "\E[33;40m[*] Adding Cron task [*]\e[0m"
-    curl -s "https://raw.githubusercontent.com/MLWALK3R/Automatic-bind9-update/master/bind9ads.cron" > /etc/cron.d/bind9ads.cron
+    curl -s "https://raw.githubusercontent.com/xpro666/Automatic-bind9-update/master/bind9ads.cron" > /etc/cron.d/bind9ads.cron
     echo -e "\E[32;40m[*] Done [*]\e[0m"
     exit 1
   else
